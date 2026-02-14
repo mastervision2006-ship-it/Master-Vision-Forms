@@ -24,10 +24,10 @@ body {
     background: #D10000;
 }
 
-/* Reveal Animation Utility Class (Replaces React Reveal Component) */
+/* Reveal Animation Utility Class */
 .reveal {
     opacity: 0;
-    transform: translateY(48px); /* 3rem ~ 48px */
+    transform: translateY(48px);
     transition: all 1s ease-out;
 }
 

@@ -2,7 +2,7 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPPeRKscYFjfj9lQva3FJ1-NioG2zN4v2p_UMkIOmlY_tBYleTYcIYt9PBwANXnxyvWw/exec";
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // --- 1. Dynamic Year in Footer ---
     const yearEl = document.getElementById('currentYear');
     if (yearEl) {
