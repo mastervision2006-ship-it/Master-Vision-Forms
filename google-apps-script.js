@@ -1,44 +1,47 @@
-// --- INSTRUÇÕES PARA O GOOGLE APPS SCRIPT ---
-// 1. Vá em script.google.com ou na Planilha > Extensões > Apps Script
-// 2. Apague todo o código que estiver lá.
-// 3. Cole este código abaixo.
-// 4. Clique em "Implantar" (Deploy) > "Nova implantação" (OU Gerenciar Implantações > Editar > Nova Versão).
-// 5. Selecione o tipo "App da Web".
-// 6. Descrição: "Captura Leads v3".
-// 7. Executar como: "Eu" (seu email).
-// 8. Quem tem acesso: "Qualquer pessoa" (MUITO IMPORTANTE).
-// 9. Se a URL mudar, atualize no arquivo script.js.
-//
-// Referência da Biblioteca (Opcional/Informativo):
-// https://script.google.com/macros/library/d/1PPh_xUiXb1zj-ehrU4gAlTOitycLXWREjWPni2s8W9_vUKDi7MylEKHZ/3
+// --- INSTRUÇÕES CRÍTICAS ---
+// 1. Cole este código no editor do Apps Script.
+// 2. Clique em "Implantar" > "Gerenciar Implantações" > "Editar" (lápis) > "Nova Versão".
+// 3. Garanta que "Quem tem acesso" esteja marcado como "QUALQUER PESSOA" (Anyone).
+// 4. Copie a URL da Web App e verifique se bate com a do arquivo script.js.
 
 function doPost(e) {
-  // LockService impede que dois envios simultâneos buguem a planilha
   var lock = LockService.getScriptLock();
   lock.tryLock(10000);
 
   try {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data;
     
-    // Lê os dados enviados pelo site
-    // O site envia como text/plain para evitar erro de CORS, mas é um JSON string
-    var rawData = e.postData.contents;
-    var data = JSON.parse(rawData);
-    
-    // --- ORDEM DAS COLUNAS ---
-    // A: NOME | B: EMAIL | C: WHATSAPP | D: DATA
+    // Tenta ler como JSON (padrão do nosso site)
+    try {
+        data = JSON.parse(e.postData.contents);
+    } catch(err) {
+        // Fallback: Se falhar o JSON, tenta ler parâmetros normais
+        data = e.parameter;
+    }
+
+    // Se não tiver data de envio, cria uma agora
+    var dateParams = data.date || new Date().toLocaleString("pt-BR", {timeZone: "America/Sao_Paulo"});
+
+    // --- ORDEM DAS COLUNAS NA PLANILHA ---
+    // Coluna A: Nome
+    // Coluna B: Email
+    // Coluna C: WhatsApp
+    // Coluna D: Data/Hora
     sheet.appendRow([
-      data.nome,
-      data.email,
-      data.whatsapp,
-      data.date
+      data.nome || "Nome não informado",
+      data.email || "Email não informado",
+      data.whatsapp || "Whats não informado",
+      dateParams
     ]);
     
+    // Retorna sucesso em JSON
     return ContentService.createTextOutput(JSON.stringify({ 'result': 'success' }))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 'result': 'error', 'error': error }))
+    // Retorna erro em JSON (útil para debug se rodar direto no navegador)
+    return ContentService.createTextOutput(JSON.stringify({ 'result': 'error', 'error': error.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   } finally {
     lock.releaseLock();
@@ -46,5 +49,6 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput("O script está ativo e funcionando (v3).");
+  // Útil para testar se a URL está correta abrindo no navegador
+  return ContentService.createTextOutput("Conexão estabelecida! O script está pronto para receber dados via POST.");
 }

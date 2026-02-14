@@ -1,6 +1,6 @@
 // --- CONFIGURAÇÃO OBRIGATÓRIA ---
 // URL DO GOOGLE APPS SCRIPT (Web App URL)
-// Atualizado para implantação: AKfycbzNnLWQyFQgBpH53kfUq9hWR3QI6cNUakRlfatoUo1Z3Uybbwy1-r_5uLU7RbDa91LBcg
+// Certifique-se que a permissão "Quem tem acesso" está como "Qualquer pessoa" no Apps Script.
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNnLWQyFQgBpH53kfUq9hWR3QI6cNUakRlfatoUo1Z3Uybbwy1-r_5uLU7RbDa91LBcg/exec"; 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         yearEl.textContent = new Date().getFullYear();
     }
 
-    // --- 2. Scroll Reveal Animation (Fail-Safe Version) ---
+    // --- 2. Scroll Reveal Animation ---
     const revealElements = document.querySelectorAll('.reveal');
     
     const observerOptions = {
@@ -69,16 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Verificação de URL configurada
-            if (SCRIPT_URL.includes("COLE_SUA_URL")) {
-                alert("ERRO DE CONFIGURAÇÃO: A URL do script não foi configurada corretamente.");
+            // Verificação básica da URL
+            if (!SCRIPT_URL || SCRIPT_URL.includes("COLE_SUA_URL")) {
+                alert("ERRO: URL de integração não configurada.");
                 return;
             }
 
             // Reset States
             if (errorMessage) errorMessage.classList.add('hidden');
             
-            // Validate Phone Length
+            // Validate Phone
             const phoneVal = phoneInput.value.replace(/\D/g, '');
             if (phoneVal.length < 10) {
                 alert("Por favor, insira um número de WhatsApp válido.");
@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btnText) btnText.textContent = "Processando...";
             submitButton.classList.add('opacity-75', 'cursor-not-allowed');
 
+            // Prepara dados
             const formData = {
                 nome: document.getElementById('nome').value,
                 email: document.getElementById('email').value,
@@ -99,29 +100,42 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                // MUDANÇA CRÍTICA: Content-Type text/plain evita o bloqueio de CORS do Google
+                // Controller para timeout de 10 segundos (evita travamento eterno)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    mode: 'no-cors', // Necessário para enviar dados ao Google sem erro de bloqueio
+                    cache: 'no-cache',
+                    credentials: 'omit',
                     headers: {
-                        'Content-Type': 'text/plain',
+                        'Content-Type': 'text/plain;charset=utf-8',
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(formData),
+                    signal: controller.signal
                 });
 
-                // Success Handling
-                // Como usamos no-cors, não recebemos resposta legível, assumimos sucesso se não der erro de rede.
+                clearTimeout(timeoutId);
+
+                // Sucesso (no-cors não retorna status code, assumimos sucesso se não der erro de rede)
                 form.classList.add('hidden');
                 if (successMessage) successMessage.classList.remove('hidden');
                 
+                // Opcional: Rolar para a mensagem de sucesso
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
             } catch (error) {
                 console.error('Erro ao enviar:', error);
-                if (errorMessage) errorMessage.classList.remove('hidden');
+                if (errorMessage) {
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.textContent = "Erro de conexão. Verifique sua internet ou tente novamente.";
+                }
                 
                 // Reset Button State
                 submitButton.disabled = false;
                 if (btnSpinner) btnSpinner.classList.add('hidden');
-                if (btnText) btnText.textContent = "RECEBER CONSULTORIA GRATUITA";
+                if (btnText) btnText.textContent = "TENTAR NOVAMENTE";
                 submitButton.classList.remove('opacity-75', 'cursor-not-allowed');
             }
         });

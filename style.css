@@ -1,12 +1,19 @@
 /* Reset and Base Styles */
 html {
     scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
 }
 
 body {
     background-color: #050505;
     color: #ffffff;
     overflow-x: hidden;
+}
+
+/* Optimize painting for heavy elements */
+.will-change-transform {
+    will-change: transform;
 }
 
 /* Custom Scrollbar - Red & Black */
@@ -25,25 +32,19 @@ body {
 }
 
 /* Reveal Animation Utility Classes */
-
-/* 
-   SAFEGUARD: .reveal is now visible by default. 
-   We only hide it if the JS runs and applies the .js-reveal class.
-*/
 .reveal {
     opacity: 1;
     transform: translateY(0);
-    /* Transition is always ready */
     transition: all 1s ease-out;
+    /* Hint browser to optimize this layer */
+    will-change: opacity, transform;
 }
 
-/* This class is added by JS to prepare the animation */
 .js-reveal {
     opacity: 0;
     transform: translateY(48px);
 }
 
-/* This class is removed by JS when visible, or we just remove .js-reveal */
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
