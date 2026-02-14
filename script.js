@@ -94,15 +94,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 nome: document.getElementById('nome').value,
                 email: document.getElementById('email').value,
                 whatsapp: document.getElementById('whatsapp').value,
-                date: new Date().toLocaleString('pt-BR') // Formata a data como string
+                date: new Date().toLocaleString('pt-BR')
             };
 
             try {
+                // MUDANÇA CRÍTICA: Content-Type text/plain evita o bloqueio de CORS do Google
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Importante para evitar erro de CORS do Google
+                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                     },
                     body: JSON.stringify(formData)
                 });
