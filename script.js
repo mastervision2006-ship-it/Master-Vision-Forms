@@ -1,5 +1,6 @@
 // --- CONFIGURAÇÃO OBRIGATÓRIA ---
 // URL DO GOOGLE APPS SCRIPT (Web App URL)
+// Atualizado para implantação: AKfycbzNnLWQyFQgBpH53kfUq9hWR3QI6cNUakRlfatoUo1Z3Uybbwy1-r_5uLU7RbDa91LBcg
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNnLWQyFQgBpH53kfUq9hWR3QI6cNUakRlfatoUo1Z3Uybbwy1-r_5uLU7RbDa91LBcg/exec"; 
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -4,10 +4,13 @@
 // 3. Cole este código abaixo.
 // 4. Clique em "Implantar" (Deploy) > "Nova implantação" (OU Gerenciar Implantações > Editar > Nova Versão).
 // 5. Selecione o tipo "App da Web".
-// 6. Descrição: "Captura Leads v2".
+// 6. Descrição: "Captura Leads v3".
 // 7. Executar como: "Eu" (seu email).
 // 8. Quem tem acesso: "Qualquer pessoa" (MUITO IMPORTANTE).
-// 9. Se a URL mudar, atualize no arquivo script.js. Se editar a implantação existente, a URL mantém.
+// 9. Se a URL mudar, atualize no arquivo script.js.
+//
+// Referência da Biblioteca (Opcional/Informativo):
+// https://script.google.com/macros/library/d/1PPh_xUiXb1zj-ehrU4gAlTOitycLXWREjWPni2s8W9_vUKDi7MylEKHZ/3
 
 function doPost(e) {
   // LockService impede que dois envios simultâneos buguem a planilha
@@ -43,5 +46,5 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput("O script está ativo e funcionando (v2).");
+  return ContentService.createTextOutput("O script está ativo e funcionando (v3).");
 }
