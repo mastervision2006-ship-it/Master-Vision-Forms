@@ -1,0 +1,37 @@
+/* Reset and Base Styles */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #050505;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+/* Custom Scrollbar - Red & Black */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+    background: #FF1C1C;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #D10000;
+}
+
+/* Reveal Animation Utility Class (Replaces React Reveal Component) */
+.reveal {
+    opacity: 0;
+    transform: translateY(48px); /* 3rem ~ 48px */
+    transition: all 1s ease-out;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
