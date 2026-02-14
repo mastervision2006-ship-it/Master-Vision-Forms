@@ -1,6 +1,6 @@
-// --- Configuration ---
-// Mantenha sua URL do Google Apps Script aqui
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPPeRKscYFjfj9lQva3FJ1-NioG2zN4v2p_UMkIOmlY_tBYleTYcIYt9PBwANXnxyvWw/exec";
+// --- CONFIGURAÇÃO OBRIGATÓRIA ---
+// URL DO GOOGLE APPS SCRIPT (Web App URL)
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPPeRKscYFjfj9lQva3FJ1-NioG2zN4v2p_UMkIOmlY_tBYleTYcIYt9PBwANXnxyvWw/exec"; 
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -11,10 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 2. Scroll Reveal Animation (Fail-Safe Version) ---
-    // Seleciona todos os elementos que devem animar
     const revealElements = document.querySelectorAll('.reveal');
     
-    // Configuração do Observador
     const observerOptions = {
         threshold: 0.1, 
         rootMargin: "0px 0px -50px 0px"
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Quando visível, remove a classe que esconde e adiciona a visível
                 entry.target.classList.remove('js-reveal');
                 entry.target.classList.add('visible');
                 observer.unobserve(entry.target); 
@@ -31,11 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    // Inicialização: Adiciona a classe de "esconder" (.js-reveal) via JS
-    // Isso garante que se o JS falhar, o CSS padrão (.reveal) mantém o site visível
     revealElements.forEach(el => {
-        el.classList.add('js-reveal'); // Esconde o elemento para animar
-        revealObserver.observe(el);    // Começa a observar
+        el.classList.add('js-reveal'); 
+        revealObserver.observe(el);    
     });
 
 
@@ -73,6 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            // Verificação de URL configurada
+            if (SCRIPT_URL.includes("COLE_SUA_URL")) {
+                alert("ERRO DE CONFIGURAÇÃO: A URL do script não foi configurada corretamente.");
+                return;
+            }
+
             // Reset States
             if (errorMessage) errorMessage.classList.add('hidden');
             
@@ -93,13 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 nome: document.getElementById('nome').value,
                 email: document.getElementById('email').value,
                 whatsapp: document.getElementById('whatsapp').value,
-                date: new Date().toLocaleString('pt-BR')
+                date: new Date().toLocaleString('pt-BR') // Formata a data como string
             };
 
             try {
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    mode: 'no-cors', // Importante para evitar erro de CORS do Google
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -107,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // Success Handling
+                // Como usamos no-cors, não recebemos resposta legível, assumimos sucesso se não der erro de rede.
                 form.classList.add('hidden');
                 if (successMessage) successMessage.classList.remove('hidden');
                 
