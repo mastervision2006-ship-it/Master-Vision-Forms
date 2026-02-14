@@ -24,13 +24,26 @@ body {
     background: #D10000;
 }
 
-/* Reveal Animation Utility Class */
+/* Reveal Animation Utility Classes */
+
+/* 
+   SAFEGUARD: .reveal is now visible by default. 
+   We only hide it if the JS runs and applies the .js-reveal class.
+*/
 .reveal {
-    opacity: 0;
-    transform: translateY(48px);
+    opacity: 1;
+    transform: translateY(0);
+    /* Transition is always ready */
     transition: all 1s ease-out;
 }
 
+/* This class is added by JS to prepare the animation */
+.js-reveal {
+    opacity: 0;
+    transform: translateY(48px);
+}
+
+/* This class is removed by JS when visible, or we just remove .js-reveal */
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
